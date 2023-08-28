@@ -57,7 +57,7 @@ class ProductController extends AbstractController
             $this->scenario->createProduct($createProductDto);
             return $this->json('', Response::HTTP_CREATED);
         } catch (Exception) {
-            return $this->json('Ошибка при создании продукта', Response::HTTP_BAD_REQUEST);
+            return $this->json('Error while creating a product.', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -107,7 +107,7 @@ class ProductController extends AbstractController
         } catch (ProductNotFoundException $exception) {
             return $this->json($exception->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (Exception) {
-            return $this->json('Ошибка при обновлении продукта', Response::HTTP_BAD_REQUEST);
+            return $this->json('Error while updating the product.', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -121,7 +121,7 @@ class ProductController extends AbstractController
         } catch (ProductNotFoundException $exception) {
             return new Response($exception->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (Exception) {
-            return $this->json('Ошибка при удалении продукта', Response::HTTP_BAD_REQUEST);
+            return $this->json('Error while deleting the product.', Response::HTTP_BAD_REQUEST);
         }
     }
 }

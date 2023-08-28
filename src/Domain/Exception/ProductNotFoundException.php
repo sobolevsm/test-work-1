@@ -8,6 +8,6 @@ class ProductNotFoundException extends Exception
 {
     public function __construct(int $productId)
     {
-        parent::__construct("Продукт с Id = $productId не найден!");
+        parent::__construct("Product with Id = $productId not found!");
     }
 }
