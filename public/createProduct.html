@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Создание Продукта</title>
+</head>
+<body>
+<h1>Создание Продукта</h1>
+<form id="product-form">
+    <label for="product-url">URL товара:</label>
+    <input type="text" id="product-url" required><br>
+
+    <label for="product-description">Описание:</label><br>
+    <textarea id="product-description" rows="4" maxlength="500"></textarea><br>
+
+    <button type="submit" id="create-button">Создать</button>
+</form>
+
+<button onclick="goBack()">Назад</button>
+
+<script>
+    const createButton = document.getElementById('create-button');
+    const productForm = document.getElementById('product-form');
+
+    document.getElementById('product-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        // Блокировка кнопки создания продукта
+        createButton.disabled = true;
+
+        // Отображение сообщения о процессе
+        const statusMessage = document.createElement('p');
+        statusMessage.textContent = 'Идет парсинг продукта(Может занять до 30 секунд)';
+        productForm.appendChild(statusMessage);
+
+        const url = document.getElementById('product-url').value;
+        const description = document.getElementById('product-description').value;
+
+        const response = await fetch('/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url,
+                description
+            })
+        });
+
+        // Снятие блокировки кнопки и удаление сообщения о процессе
+        createButton.disabled = false;
+        productForm.removeChild(statusMessage);
+
+        if (response.ok) {
+            document.getElementById('product-form').reset();
+            alert('Продукт успешно создан!');
+        } else {
+            alert(await response.text());
+        }
+    });
+
+    function goBack() {
+        window.location.href = 'index.html';
+    }
+</script>
+</body>
+</html>

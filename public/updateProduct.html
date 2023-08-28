@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование продукта</title>
+</head>
+<body>
+<h2>Редактирование продукта</h2>
+<form id="productForm">
+    <label for="product_title">Наименование:</label><br>
+    <input type="text" id="product_title" name="product_title" required><br><br>
+
+    <label for="price">Цена:</label><br>
+    <input type="number" id="price" name="price" step=1 required><br><br>
+
+    <p>Текущая фотография</p>
+    <img id="currentPhoto" src="" alt="Фото не найдено" height="200"><br><br>
+
+    <input type="url" id="photoUrl" name="photoUrl" placeholder="URL новой фотографии"><br><br>
+
+    <label for="description">Описание:</label><br>
+    <textarea id="description" name="description" rows="4" cols="50" required></textarea><br><br>
+
+    <button type="button" id="submitBtn">Сохранить изменения</button>
+    <button type="button" id="backButton">Назад</button>
+</form>
+
+<script>
+    function loadProduct() {
+        // Загрузка данных о продукте с сервера
+        fetch(`/api/products/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                productNameInput.value = product.title;
+                priceInput.value = product.price;
+                descriptionTextarea.value = product.description;
+                currentPhoto.src = product.photo;
+                photoUrlInput.value = product.photo;
+            })
+            .catch(error => {
+                alert('Произошла ошибка при загрузке продукта');
+            });
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    const productNameInput = document.getElementById('product_title');
+    const priceInput = document.getElementById('price');
+    const photoUrlInput = document.getElementById('photoUrl');
+    const currentPhoto = document.getElementById('currentPhoto');
+    const descriptionTextarea = document.getElementById('description');
+
+    loadProduct();
+
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        const title = productNameInput.value;
+        const price = parseInt(priceInput.value);
+        const photo = photoUrlInput.value;
+        const description = descriptionTextarea.value;
+
+        fetch(`/api/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                price,
+                photo,
+                description
+            })
+        })
+            .then(response => response.json())
+            .then(() => {
+                alert('Товар успешно обновлен!');
+                loadProduct();
+            })
+            .catch(error => {
+                alert('Произошла ошибка при обновлении товара!');
+                console.error('Произошла ошибка при обновлении товара:', error);
+            });
+    });
+
+    document.getElementById('backButton').addEventListener('click', function() {
+        window.location.href = 'productList.html';
+    });
+</script>
+</body>
+</html>
